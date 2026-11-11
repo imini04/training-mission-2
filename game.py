@@ -1,8 +1,10 @@
+from data import get_default_quizzes
+
 class QuizGame:
     """퀴즈 게임 관리 클래스"""
 
     def __init__(self):
-        self.quizzes = []
+        self.quizzes = get_default_quizzes()
         self.best_score = None
 
     def show_menu(self):
@@ -52,7 +54,32 @@ class QuizGame:
             print()
 
     def play_quiz(self):
-        print("none")
+        """저장된 퀴즈를 순서대로 출제하고 결과를 보여준다."""
+        if not self.quizzes:
+            print("등록된 퀴즈가 없습니다. 먼저 퀴즈를 추가해 주세요.")
+            return
+
+        total = len(self.quizzes)
+        correct_count = 0
+        print(f"퀴즈를 시작합니다! (총 {total}문제)")
+        print()
+
+        for number, quiz in enumerate(self.quizzes, start=1):
+            print("-" * 40)
+            quiz.display(number)
+            user_answer = self.get_number("정답 입력: ", 1, 4)
+
+            if quiz.is_correct(user_answer):
+                print("정답입니다!")
+                correct_count += 1
+            else:
+                print(f"오답입니다. 정답은 {quiz.answer}번입니다.")
+            print()
+
+        score = correct_count * 100 // total
+        print("=" * 40)
+        print(f"결과: {total}문제 중 {correct_count}문제 정답! ({score}점)")
+        print("=" * 40)
 
     def add_quiz(self):
         print("none")
