@@ -6,7 +6,8 @@ def main():
     try:
         game.run()
     except (KeyboardInterrupt, EOFError):
-        print("\n\n입력이 중단되어 프로그램이 종료됩니다.")
+        game.save_state()
+        print("\n\n입력이 중단되어 저장 후 프로그램이 종료됩니다.")
 
 
 if __name__ == "__main__":
