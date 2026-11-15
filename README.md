@@ -136,6 +136,9 @@ training-mission-2/
 ![점수 확인](docs/screenshots/score.png)
 ![점수 없음](docs/screenshots/score_empty.png)
 
+### Git 커밋 그래프
+![커밋 그래프](docs/screenshots/git_log.png)
+
 ## Git 실습 기록
 
 - 이 문단은 저장소를 별도 폴더(`training-mission-2-clone`)에 clone한 뒤 추가하고 push했습니다.
