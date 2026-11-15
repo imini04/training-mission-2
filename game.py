@@ -203,7 +203,7 @@ class QuizGame:
         """손상된 state.json 파일을 state.json.bak로 백업한다."""
         backup_file = self.state_file + ".bak"
         try:
-            os.rename(self.state_file, backup_file)
+            os.replace(self.state_file, backup_file)
             print(f"손상된 state.json 파일을 {backup_file}로 백업했습니다.")
         except OSError:
             print("손상된 state.json 파일을 백업하지 못했습니다.")
