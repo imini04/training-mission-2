@@ -185,6 +185,7 @@ class QuizGame:
 
         except (json.JSONDecodeError, KeyError, TypeError, ValueError):
             print("state.json 파일이 손상되어 기본 퀴즈 데이터로 복구합니다.")
+            self.backup_corrupted_file()
             self.reset_to_default()
             return
         except OSError:
@@ -197,6 +198,15 @@ class QuizGame:
         self.best_score = best_score
         score_text = "없음" if best_score is None else f"{best_score}점"
         print(f"저장된 데이터를 불러왔습니다. (퀴즈 {len(quizzes)}개, 최고점수 {score_text})")
+
+    def backup_corrupted_file(self):
+        """손상된 state.json 파일을 state.json.bak로 백업한다."""
+        backup_file = self.state_file + ".bak"
+        try:
+            os.rename(self.state_file, backup_file)
+            print(f"손상된 state.json 파일을 {backup_file}로 백업했습니다.")
+        except OSError:
+            print("손상된 state.json 파일을 백업하지 못했습니다.")
 
     def reset_to_default(self):
         """기본 퀴즈 데이터로 초기화하고 바로 저장한다."""
