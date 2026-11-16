@@ -58,6 +58,7 @@ training-mission-2/
 ├── quiz.py            # Quiz 클래스: 문제 하나(문제, 선택지, 정답)와 출력·채점·변환
 ├── data.py            # 기본 크리스마스 퀴즈 5개
 ├── state.json         # 실행 시 자동 생성되는 데이터 파일 (Git 추적 제외)
+├── state.json.bak     # state.json이 손상됐을 때 자동 생성되는 백업 (Git 추적 제외)
 ├── docs/
 │   └── screenshots/   # 실행 화면 캡처
 ├── .gitignore
@@ -75,7 +76,9 @@ training-mission-2/
     - 실행/메뉴: `run()`, `show_menu()`
     - 입력 처리: `get_number()`, `get_text()`
     - 게임 기능: `play_quiz()`, `ask_question()`, `show_result()`, `update_best_score()`, `add_quiz()`, `list_quizzes()`, `show_score()`
-    - 저장/불러오기: `load_state()`, `save_state()`, `reset_to_default()`
+    - 저장/불러오기: `load_state()`, `save_state()`, `backup_corrupted_file()`, `reset_to_default()`
+
+기본 퀴즈를 늘리려면 `data.py`의 `get_default_quizzes()` 리스트에 `Quiz(문제, [선택지 4개], 정답 번호)`를 추가하면 됩니다.
 
 ## 데이터 파일 설명 (state.json)
 
@@ -110,12 +113,14 @@ training-mission-2/
 ### 파일이 없거나 손상된 경우
 
 - **파일이 없을 때(첫 실행)**: 기본 퀴즈 5개로 시작하고 `state.json`을 새로 만듭니다.
-- **손상되었을 때**: JSON 문법 오류, 필요한 키 누락, 선택지 개수나 정답 번호가 잘못된 경우 안내 메시지를 출력하고 기본 퀴즈 데이터로 복구합니다.
+- **손상되었을 때**: JSON 문법 오류, 필요한 키 누락, 선택지 개수나 정답 번호가 잘못된 경우 안내 메시지를 출력합니다. 이때 손상된 파일은 `state.json.bak`으로 옮겨 보존하고(이미 있으면 덮어씀), 기본 퀴즈 데이터로 복구한 뒤 새 `state.json`을 저장합니다.
 - **읽기/쓰기 오류**: 안내 메시지를 출력하고 프로그램은 계속 실행됩니다.
 
 `state.json`은 실행할 때마다 내용이 바뀌는 개인 데이터라 `.gitignore`로 Git 추적에서 제외했습니다.
 
 ## 실행 화면
+
+각 기능을 실제로 실행한 화면입니다. 잘못된 입력(`abc`, `9`, 빈 입력, 정답 `0`) 처리와, 프로그램을 종료하고 다시 실행했을 때 추가한 퀴즈와 최고 점수가 유지되는 것도 확인했습니다.
 
 ### 개발 환경
 ![개발 환경](docs/screenshots/dev_env.png)
@@ -137,6 +142,8 @@ training-mission-2/
 ![점수 없음](docs/screenshots/score_empty.png)
 
 ### Git 커밋 그래프
+`git log --oneline --graph --all` 결과로, 브랜치가 갈라졌다 병합되는 기록(`feature/backup-corrupted-state` → `main`)과 전체 커밋 수를 확인할 수 있습니다.
+
 ![커밋 그래프](docs/screenshots/git_log.png)
 
 ## 설계 및 개발 방식
@@ -188,7 +195,7 @@ JSON은 텍스트라 사람이 읽고 고칠 수 있고, 파이썬의 `dict`/`li
 - `feature/backup-corrupted-state`: 손상 파일 백업 기능 개발 후 `main`에 `--no-ff`로 병합 (병합 커밋 `779f559`)
 
 ### 커밋 수 증빙
-총 17개 이상의 커밋이 있습니다. (아래는 `git log --oneline --graph --all` 일부)
+총 19개의 커밋이 있습니다. (아래는 `git log --oneline --graph --all` 일부)
 
 ```
 *   779f559 Merge: 손상 파일 백업 기능 병합
@@ -203,5 +210,6 @@ JSON은 텍스트라 사람이 읽고 고칠 수 있고, 파이썬의 `dict`/`li
 
 ## Git 실습 기록
 
-- 이 문단은 저장소를 별도 폴더(`training-mission-2-clone`)에 clone한 뒤 추가하고 push했습니다.
-- 원래 작업 폴더에서는 `git pull`로 이 변경사항을 받아왔습니다.
+- **clone**: 저장소를 별도 폴더(`training-mission-2-clone`)에 `git clone`으로 복제했습니다.
+- **push**: 복제한 폴더에서 이 문단을 README에 추가하고 commit한 뒤 `git push`했습니다.
+- **pull**: 원래 작업 폴더(`training-mission-2`)에서 `git pull`로 이 변경사항을 받아와 반영된 것을 확인했습니다.
